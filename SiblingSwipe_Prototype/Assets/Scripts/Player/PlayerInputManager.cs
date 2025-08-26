@@ -15,6 +15,7 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string _rotation = "Rotation";
     [SerializeField] private string _jump = "Jump";
     [SerializeField] private string _carry = "Carry";
+    [SerializeField] private string _throw = "Throw";
 
     [Header("Deadzone value")]
     [SerializeField] private float _leftStickDeadzonevalue;
@@ -24,13 +25,15 @@ public class PlayerInputManager : MonoBehaviour
     private InputAction _rotationAction;
     private InputAction _jumpAction;
     private InputAction _carryAction;
+    private InputAction _throwAction;
 
 
     // Getters and setters
     public Vector2 MovementInput { get; private set; }
     public Vector2 RotationInput { get; private set; }
-    public bool IsJumpTriggered { get; private set ; }
-    public bool IscarryTriggered {  get; private set ; }
+    public bool IsJumpTriggered { get; private set; }
+    public bool IscarryTriggered => _carryAction.WasPerformedThisFrame();
+    public bool IsThrowTriggered{ get; private set; }
 
 
 
@@ -44,6 +47,7 @@ public class PlayerInputManager : MonoBehaviour
         _rotationAction = mapReference.FindAction(_rotation);
         _jumpAction = mapReference.FindAction(_jump);
         _carryAction = mapReference.FindAction(_carry);
+        _throwAction = mapReference.FindAction(_throw);
 
         RegisterInputActions();
 
@@ -62,9 +66,8 @@ public class PlayerInputManager : MonoBehaviour
         _jumpAction.performed += inputInfo => IsJumpTriggered = true;
         _jumpAction.canceled += inputInfo => IsJumpTriggered = false;
 
-        _carryAction.performed += inputInfo => IscarryTriggered = true;
-        _carryAction.canceled += inputInfo => IscarryTriggered = false;
-
+        _throwAction.performed += inputInfo => IsThrowTriggered = true;
+        _throwAction.canceled += inputInfo => IsThrowTriggered = false;
     }
 
     private void OnEnable()
